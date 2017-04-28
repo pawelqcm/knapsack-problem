@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace KnapsackProblem
 {
     internal abstract class Chromosome
     {
-        public Gene[] Genes { get; }
         protected Dictionary<int, KeyValuePair<double, double>> Items;
         protected Random Random { get; }
+        public Gene[] Genes { get; }
 
         protected Chromosome(Dictionary<int, KeyValuePair<double, double>> items, Random random)
         {
@@ -48,14 +49,15 @@ namespace KnapsackProblem
             }
         }
 
-        public void PrintChromosome()
+        public override string ToString()
         {
+            var sb = new StringBuilder();
             for (var i = 0; i < Genes.Length; i++)
             {
-                Console.Write(Convert.ToInt32(Genes[i].On));
+                sb.Append(Convert.ToInt32(Genes[i].On));
             }
-            Console.Write(" [{0}, {1}]\n", TotalWeight, TotalValue);
+            sb.Append(" [" + TotalWeight + " | " + TotalValue + " ]");
+            return sb.ToString();
         }
-
     }
 }

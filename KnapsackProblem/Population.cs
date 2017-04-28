@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace KnapsackProblem
 {
@@ -10,13 +11,12 @@ namespace KnapsackProblem
         private const double MutationChance = .5;
 
         private readonly List<Chromosome> _chromosomes;
-        private Dictionary<int, KeyValuePair<double, double>> Items { get; }
         private readonly int _solutions;
         private readonly int _capacity;
         private readonly Random _random;
+        private Dictionary<int, KeyValuePair<double, double>> Items { get; }
 
         public int Generation => _generationNo;
-
         public int Length => Items.Count;
 
         public Population(Dictionary<int, KeyValuePair<double, double>> items, int capacity, int solutions, Random random)
@@ -126,13 +126,14 @@ namespace KnapsackProblem
             return child;
         }
 
-        public void PrintPopulation()
+        public override string ToString()
         {
+            var sb = new StringBuilder();
             foreach (var c in _chromosomes)
             {
-                c.PrintChromosome();
+                sb.AppendLine(c.ToString());
             }
-            Console.WriteLine();
+            return sb.ToString();
         }
 
     }

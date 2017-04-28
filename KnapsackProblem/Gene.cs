@@ -2,7 +2,6 @@
 
 namespace KnapsackProblem
 {
-
     internal abstract class Gene
     {
         public bool On { get; set; }

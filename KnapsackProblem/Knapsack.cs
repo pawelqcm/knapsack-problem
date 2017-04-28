@@ -8,25 +8,29 @@ namespace KnapsackProblem
         private readonly Dictionary<int, KeyValuePair<double, double>> _items; // given items
         private readonly int _capacity; // max weight
         private readonly int _solutions; // default number of solutions 
+        private readonly Random _random;
+        private readonly Logger _logger;
         private Population _population; // newest generation
         private Chromosome _best; // best so far
-        private readonly Random _random;
 
-        public Knapsack(int capacity, Dictionary<int, KeyValuePair<double, double>> items, int solutions)
+        public Knapsack(int capacity, Dictionary<int, KeyValuePair<double, double>> items, int solutions, Logger logger)
         {
             _items = items;
             _capacity = capacity;
             _solutions = solutions;
             _best = new EmptyChromosome(items, _random);
             _random = new Random();
+            _logger = logger;
         }
 
         public void Solve(int generations)
         {
+            Console.WriteLine("Solving...");
             _population = new Population(_items, _capacity, _solutions, _random);
-            _population.PrintPopulation();
 
-            Console.WriteLine("Looking for solutions..");
+            _logger.Log("Initial population:");
+            _logger.Log(_population.ToString());
+            _logger.Log("Looking for solutions:");
 
             Step(ref generations);
             while (true)
@@ -35,7 +39,8 @@ namespace KnapsackProblem
                 {
                     _population = _population.SpawnPopulation();
                     Step(ref generations);
-                } else
+                }
+                else
                     return;
             }
         }
@@ -51,8 +56,7 @@ namespace KnapsackProblem
             if (candidate != null && candidate.TotalValue > _best.TotalValue)
             {
                 _best = candidate;
-                Console.Write("new best => ");
-                _best.PrintChromosome();
+                _logger.Log("new best => " + _best.ToString());
             }
         }
 
