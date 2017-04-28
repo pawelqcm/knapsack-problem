@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnapsackProblem
 {
 
-    abstract class Gene
+    internal abstract class Gene
     {
         public bool On { get; set; }
-        protected Random _random;
+        protected Random Random;
 
-        public Gene(Random random)
+        protected Gene(Random random)
         {
-            _random = random;
+            Random = random;
         }
 
     }

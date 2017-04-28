@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnapsackProblem
 {
-
-    abstract class Chromosome
+    internal abstract class Chromosome
     {
         public Gene[] Genes { get; }
-        protected Dictionary<int, KeyValuePair<double, double>> _items;
-        protected Random _random { get; }
-        
-        public Chromosome(Dictionary<int, KeyValuePair<double, double>> items, Random random)
+        protected Dictionary<int, KeyValuePair<double, double>> Items;
+        protected Random Random { get; }
+
+        protected Chromosome(Dictionary<int, KeyValuePair<double, double>> items, Random random)
         {
             Genes = new Gene[items.Count];
-            _items = items;
-            _random = random;
+            Items = items;
+            Random = random;
         }
 
         public double TotalWeight
@@ -29,7 +25,7 @@ namespace KnapsackProblem
                 {
                     if (Genes[i].On)
                     {
-                        total += _items[i].Key;
+                        total += Items[i].Key;
                     }
                 }
                 return total;
@@ -45,7 +41,7 @@ namespace KnapsackProblem
                 {
                     if (Genes[i].On)
                     {
-                        total += _items[i].Value;
+                        total += Items[i].Value;
                     }
                 }
                 return total;

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnapsackProblem
 {
-    class RandomInput
+    internal class RandomInput
     {
-        private Random _random;
+        private readonly Random _random;
         public Dictionary<int, KeyValuePair<double, double>> Items { get; }
         public double WeightTotal { get; private set; }
         public double ValueTotal { get; private set; }

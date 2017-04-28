@@ -1,40 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnapsackProblem
 {
-    class Population
+    internal class Population
     {
-        private static int GenerationNo = 0;
-        private readonly double _mutationChance = .5;
+        private static int _generationNo;
+        private const double MutationChance = .5;
 
-        private List<Chromosome> _chromosomes;
-        private Dictionary<int, KeyValuePair<double, double>> _items { get; }
-        private int _solutions;
-        private int _capacity;
-        private Random _random;
+        private readonly List<Chromosome> _chromosomes;
+        private Dictionary<int, KeyValuePair<double, double>> Items { get; }
+        private readonly int _solutions;
+        private readonly int _capacity;
+        private readonly Random _random;
 
-        public int Generation
-        {
-            get
-            {
-                return GenerationNo;
-            }
-        }
+        public int Generation => _generationNo;
 
-        public int Length {
-            get
-            {
-                return _items.Count;
-            }
-        }
+        public int Length => Items.Count;
 
         public Population(Dictionary<int, KeyValuePair<double, double>> items, int capacity, int solutions, Random random)
         {
-            _items = items;
+            Items = items;
             _capacity = capacity;
             _solutions = solutions;
             _random = random;
@@ -42,84 +29,76 @@ namespace KnapsackProblem
             _chromosomes = new List<Chromosome>();
             for (var i = 0; i < _solutions; i++)
             {
-                _chromosomes.Add(new RandomChromosome(_items, _random));
+                _chromosomes.Add(new RandomChromosome(Items, _random));
             }
-            GenerationNo++;
+            _generationNo++;
         }
 
-        public Population(Dictionary<int, KeyValuePair<double, double>> items, int capacity, int solutions, Random random, List<Chromosome> MutatedChromosomes)
+        public Population(Dictionary<int, KeyValuePair<double, double>> items, int capacity, int solutions, Random random, List<Chromosome> mutatedChromosomes)
         {
-            _items = items;
+            Items = items;
             _capacity = capacity;
             _solutions = solutions;
             _random = random;
 
-            _chromosomes = MutatedChromosomes;
-            GenerationNo++;
+            _chromosomes = mutatedChromosomes;
+            _generationNo++;
         }
 
         public Chromosome GetBest()
         {
-            List<Chromosome> Valid = FindValid();
-            Chromosome Best = Valid.FirstOrDefault();
-            if (Best != null)
+            var valid = FindValid();
+            var best = valid.FirstOrDefault();
+            if (best != null)
             {
-                for (var i = 1; i < Valid.Count; i++)
+                for (var i = 1; i < valid.Count; i++)
                 {
-                    if (Valid[i].TotalWeight < _capacity && Valid[i].TotalValue > Best.TotalValue)
+                    if (valid[i].TotalWeight < _capacity && valid[i].TotalValue > best.TotalValue)
                     {
-                        Best = Valid[i];
+                        best = valid[i];
                     }
                 }
             }
-            return Best;
+            return best;
         }
 
         private List<Chromosome> FindValid()
         {
-            List<Chromosome> Valid = new List<Chromosome>();
-            foreach (var c in _chromosomes)
-            {
-                if (c.TotalWeight <= _capacity)
-                {
-                    Valid.Add(c);
-                }
-            }
-            return Valid;
+            return _chromosomes.Where(c => c.TotalWeight <= _capacity).ToList();
         }
 
         public Population SpawnPopulation()
         {
-            List<Chromosome> Valid = FindValid();
-            List<Chromosome> Chromosomes = new List<Chromosome>();
+            var valid = FindValid();
+            var chromosomes = new List<Chromosome>();
 
-            for (var i = 0; i < Valid.Count; i++)
+            for (var i = 0; i < valid.Count; i++)
             {
-                var m = Valid[i];
-                if (Valid.Any())
+                var m = valid[i];
+                if (valid.Any())
                 {
-                    var f = Valid.First();
-                    Chromosomes.Add(Cross(m, f));
-                    Valid.Remove(m);
-                    Valid.Remove(f);
+                    var f = valid.First();
+                    chromosomes.Add(Cross(m, f));
+                    valid.Remove(m);
+                    valid.Remove(f);
                 } else
                 {
-                    Chromosomes.Add(m);
+                    chromosomes.Add(m);
                 }
             }
 
-            while (Chromosomes.Count < _solutions)
-                Chromosomes.Add(new RandomChromosome(_items, _random));
+            while (chromosomes.Count < _solutions)
+                chromosomes.Add(new RandomChromosome(Items, _random));
 
-            if (_random.NextDouble() < _mutationChance)
+            if (_random.NextDouble() < MutationChance)
             {
-                var r = _random.Next(0, Chromosomes.Count);
-                Chromosomes[r] = Mutate(Chromosomes[r]);
+                var r = _random.Next(0, chromosomes.Count);
+                chromosomes[r] = Mutate(chromosomes[r]);
             }
 
-            Population Spawned = new Population(_items, _capacity, _solutions, _random, Chromosomes);
+            var spawned = new Population(Items, _capacity, _solutions, _random, chromosomes);
 
-            return Spawned;
+            return spawned;
         }
 
         private Chromosome Mutate(Chromosome chromosome)
@@ -132,8 +111,8 @@ namespace KnapsackProblem
 
         private Chromosome Cross(Chromosome mother, Chromosome father)
         {
-            int middle = (int)Math.Floor((double)Length / 2);
-            Chromosome child = new EmptyChromosome(_items, _random);
+            var middle = (int)Math.Floor((double)Length / 2);
+            Chromosome child = new EmptyChromosome(Items, _random);
 
             for (var i = 0; i < middle; i++)
             {

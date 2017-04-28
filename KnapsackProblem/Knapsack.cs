@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnapsackProblem
 {
-    class Knapsack
+    internal class Knapsack
     {
-        private Dictionary<int, KeyValuePair<double, double>> _items; // given items
-        private int _capacity; // max weight
-        private int _solutions; // default number of solutions 
+        private readonly Dictionary<int, KeyValuePair<double, double>> _items; // given items
+        private readonly int _capacity; // max weight
+        private readonly int _solutions; // default number of solutions 
         private Population _population; // newest generation
         private Chromosome _best; // best so far
-        private Random _random;
+        private readonly Random _random;
 
         public Knapsack(int capacity, Dictionary<int, KeyValuePair<double, double>> items, int solutions)
         {
@@ -24,28 +21,28 @@ namespace KnapsackProblem
             _random = new Random();
         }
 
-        public void Solve(int Generations)
+        public void Solve(int generations)
         {
             _population = new Population(_items, _capacity, _solutions, _random);
             _population.PrintPopulation();
 
             Console.WriteLine("Looking for solutions..");
 
-            Step(ref Generations);
+            Step(ref generations);
             while (true)
             {
-                if (Generations > 0)
+                if (generations > 0)
                 {
                     _population = _population.SpawnPopulation();
-                    Step(ref Generations);
+                    Step(ref generations);
                 } else
                     return;
             }
         }
 
-        private void Step(ref int Generation)
+        private void Step(ref int generation)
         {
-            Generation--;
+            generation--;
             Update(_population.GetBest());
         }
 
