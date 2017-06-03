@@ -3,16 +3,12 @@ using System.Collections.Generic;
 
 namespace KnapsackProblem
 {
-    internal class RandomInput
+    internal class RandomInput : Input
     {
         private readonly Random _random;
-        public Dictionary<int, KeyValuePair<double, double>> Items { get; }
-        public double WeightTotal { get; private set; }
-        public double ValueTotal { get; private set; }
 
         public RandomInput(int numberOfItems)
         {
-            Items = new Dictionary<int, KeyValuePair<double, double>>();
             _random = new Random();
             Fill(numberOfItems);
         }
